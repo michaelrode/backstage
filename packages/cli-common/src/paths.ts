@@ -15,7 +15,7 @@
  */
 
 import fs from 'fs';
-import { dirname, resolve as resolvePath } from 'path';
+import { dirname, resolve as resolvePath, relative, isAbsolute } from 'path';
 
 export type ResolveFunc = (...paths: string[]) => string;
 
@@ -155,4 +155,20 @@ export function findPaths(searchDir: string): Paths {
     resolveTarget: (...paths) => resolvePath(targetDir, ...paths),
     resolveTargetRoot: (...paths) => resolvePath(getTargetRoot(), ...paths),
   };
+}
+
+/**
+ * Checks if path is the same as or a child path of base.
+ */
+export function isChildPath(base: string, path: string): boolean {
+  const relativePath = relative(base, path);
+  if (relativePath === '') {
+    // The same directory
+    return true;
+  }
+
+  const outsideBase = relativePath.startsWith('..'); // not outside base
+  const differentDrive = isAbsolute(relativePath); // on Windows, this means dir is on a different drive from base.
+
+  return !outsideBase && !differentDrive;
 }

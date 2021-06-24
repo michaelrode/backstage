@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export { findPaths } from './paths';
+export { findPaths, isChildPath } from './paths';
 export type { Paths } from './paths';
